@@ -1,0 +1,99 @@
+namespace dnet
+
+http://www.rakkarsoft.com/raknet/manual/tutorialsample6.html
+http://www.rakkarsoft.com/raknet/manual/networkobject.html
+http://www.rakkarsoft.com/raknet/manual/distributednetworkobject.html
+
+tjek REGISTER_STATIC_RPC() det kan måske bruges som attributter?
+
+class Peer {
+	receive();
+	send(void*, len, channel, flags);
+	freePacket()
+	disconnect();
+};
+
+class Server {
+	bool start(serverip, serverport);
+};
+
+class Client {
+	bool connect(serverIp, serverPort, (clientport?));
+};
+
+class DistributedObject {
+	getID()
+	is owner
+}
+
+// Init
+
+dnet::init()
+
+// Create Server
+
+dnet::createServer();
+
+// Finalize
+dnet:shutdown();
+
+http://www.yake.org/wiki/doku.php?id=component:yake:net:packet
+
+-----------
+
+- Enten sync'er vi native typer (int, char..) eller objekter
+- Enten som internal eller external
+
+class ... {
+public:
+	DistributedObject obj		// Vi kender ikke obj navn
+}
+
+template<...>
+class DistributedObject {
+	// Se auto_ptr
+}
+
+
+class DistributedObjectManager {
+public:
+	void setServer()	// One of the two
+	void setClient()	//     - do -
+}
+
+new callbacks
+
+class DNetServer/DNetClient  {
+	onDistributedObjectCreate()
+	onDistributedObjectDelete()
+};
+
+class Tank : public dnet::DistributedObject {
+public:
+	Vector	position;
+	bool	alive;
+
+	DNET_DCLASS(Tank, 10, 1000, DNET_OWNER_CLIENT (_SERVER), 
+		DNET_DMEMBER(Vector,position, 1),
+		DNET_DMEMBER(bool, alive, 2 )
+	);
+
+	----
+		#define DNET_DCLASS(class, mininterval, maxinternval, members) \
+			dnet::dist::class(#class,class,mininternval,maxinterval,members)
+		#define DNET_DMEMBER(value, pri) \
+			dnet::dist::member(dnet::dobj::typeof(value),value,pri)
+};
+
+dnet::dist:class() {
+	dnet::dist::manager->register(this);
+}
+
+dnet::dist::~class() {
+	dnet::dist::manager->remove(this)
+}
+
+dnet::dist::manager->authoritative() {	// Pointer til object eller navn
+	return DNET_OWNER_CLIENT // _SERVER;
+}
+

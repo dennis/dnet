@@ -1,0 +1,57 @@
+AC_INIT(libdnet, 0.0, dennis@moellegaard.dk)
+AM_INIT_AUTOMAKE(libdnet.a, 0.0)
+AC_CONFIG_HEADERS([src/config.h])
+
+AC_PROG_CXX
+AC_PROG_RANLIB
+AC_LANG(C++)
+AC_PROG_MAKE_SET
+AC_PROG_INSTALL
+
+SDL_VERSION=1.2.4
+AM_PATH_SDL($SDL_VERSION, :, AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!]))
+AC_CHECK_LIB(SDL_gfx, filledCircleColor,, AC_MSG_ERROR([SDL_gfx library requried]))
+
+AC_MSG_CHECKING(for ccache)
+ccache=`which ccache`
+if test "x$ccache" != "x"; then
+    GCC="$ccache $GCC"
+    CC="$ccache $CC"
+    GXX="$ccache $GXX"
+    CXX="$ccache $CXX"
+    AC_MSG_RESULT($ccache)
+else
+    AC_MSG_RESULT(not found)
+fi
+AC_SUBST(ccache)
+
+AC_ARG_ENABLE(debug,   [  --enable-debug        enable debug])
+AC_MSG_CHECKING(for debug)
+AC_MSG_RESULT($enable_debug)
+
+if test x$enable_debug = xyes; then
+	DEBUG_FLAGS="-W -Wall -Wshadow -Wundef -g -ggdb -DDEBUG"
+else
+	DEBUG_FLAGS=""
+fi
+AC_SUBST(DEBUG_FLAGS)
+
+ENET_FLAGS="-I../enet/include"
+
+CFLAGS="$CFLAGS $ENET_FLAGS $DEBUG_FLAGS"
+CXXFLAGS="$CXXFLAGS $ENET_FLAGS $DEBUG_FLAGS"
+
+
+AC_CONFIG_FILES([
+	Makefile 
+	src/Makefile	
+	src/include/Makefile
+	src/include/dnet/Makefile
+	src/test/Makefile
+	src/test/blaster/Makefile
+	src/test/replayer/Makefile
+	src/test/t1/Makefile
+	src/test/t2/Makefile
+	src/test/t3/Makefile
+	])
+AC_OUTPUT

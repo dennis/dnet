@@ -1,0 +1,7 @@
+*.o
+Makefile
+Makefile.in
+config.h
+config.h.in
+stamp-h1
+.deps

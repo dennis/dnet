@@ -1,0 +1,65 @@
+COMPILING
+=========
+CXXFLAGS="-DDEBUG -I../../enet/include/ -Wall -Wunused -Wcast-qual -Wconversion -Woverloaded-virtual -Winline -Werror -ggdb" ./configure
+
+TODO
+====
+- brug bzlogview datafiler
+- lav egen datafil
+	- lav en klient der kan
+		+ connect til server
+			+ mål roundtip (det gør enet) 
+		+ server sender "startgame" ud til alle
+ 		- en klient optager positionerne
+		- optagelsen sammenlignes med originalen
+			- "diffs" ?
+ BUGS
+ ====
+ - **BRUG IKKE pack(void*,std::string)**
+ - std::string pack() virker ikke (bemærk at client unpacker filler og tror den er 265 lang, men serveren tror at filler er 0 bytes. Derved unpacker client noget garbage)
+
+TODO - low
+========
+- mangler bool?
+ - Add  Interface events: onFailure, onTimeout
+- Refactor DistManager. Add "addHelper" to Interface. DistManager should then be a helper that is called for every event (incoming message, connect, disconnect)
+- Dont use AttributeID (it could be removed) for AttributeFlags in NetObjectDataPackets, use the priority (as we only end a whole unit)
+- Attributter skal kunne sættes "one time" (fx skud, som opfører sig forventeligt og derfor kun behøver at oprettes) (pri = 0 ? PRI_ONCE)
+- LOI (DROPPET)
+
+ TODO - nicetohave
+ =============
+- Marshalling? (eg: integers are compressed)
+	- Improved callback (non-static) http://www.partow.net/programming/templatecallback/index.html
+	- Change default for  float  send less precision bits
+- Autotools
+	- Add test/t? to autotools
+	- Add enet to autotools (automatic compilation)
+	- Add strict testing from test/t?/Makefiles
+- Document it
+ - unpack/pack needs a length to avoid boundary problems 
+- Dont throw const char*, use Exceptions!
+- Buffer should be template based
+- Buffer should be able to expand its capacity runtime
+- Refactor DistManager (all static might be a bad idea)
+- Transfer ownwership of NetObjects (eg, client creates a shot, server takes ownership)
+- unpack/pack: use htons / ntohs
+- explicit synchronization (med en værdi der angiver hvilke attribute units der skal sendes)
+
+IDEAS
+====
+ - assert() -> http://www.cs.wustl.edu/~schmidt/PDF/C++-assert4.pdf 
+ - Let DNET detect which data are often changed and adjust the min/max values according to what data often changes
+
+ 
+ NOTES:
+ =====
+  http://groups.google.com/group/comp.games.development.programming.algorithms/browse_thread/thread/135965f2d2f5087b/ae166236236b45aa?lnk=st&q=&rnum=33#ae166236236b45aa <- persistence  (REgisterPacketType..etc)
+- Kun server har LOI. Klienten har ikke, da serveren gerne skulle have et opdateret billede af alle NetObjecter. Serveren kunne godt sammensætte et LOI til Klienten, men det ville betyde mere kommunikation fra server til klienten. Noget vi allerede har meget af. Omvendt, sender klinetne ikke ligeså meget data som man forventer at den modtager
+ 
+ MASTERPLAN
+ =========
++ implementer netdel
+.. implementér distribueret model
+- implementér test
+	- XScreenSaver - Blaster ? Attaction (Balls)
