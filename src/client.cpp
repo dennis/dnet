@@ -22,54 +22,54 @@ Client::~Client() {
 }
 
 bool Client::connect(const IPAddress& addr) {
-	if( state != S_DISCONNECTED ) return false;
+	if( this->state != S_DISCONNECTED ) return false;
 
-	if( enet_address_set_host( &address, addr.getIP().c_str() ) != 0 ) {
+	if( enet_address_set_host( &this->address, addr.getIP().c_str() ) != 0 ) {
 		return false;
 	}
-	address.port = addr.getPort();
+	this->address.port = addr.getPort();
 
 	// Create host
-	client = enet_host_create( 
+	this->client = enet_host_create( 
 		NULL,
 		10, // Max number of clients
 		0,  // no incoming bw throttling (eg 56k modem, with 57600 / 8 for 56k downstream)
 		0   // no outgping bw throttling (eg 15k modem with 14400 / 8 for 14k upstream)
 	);
 
-	if( client == NULL ) {
+	if( this->client == NULL ) {
 		return false;
 	}
 
-	int ret = enet_address_set_host( &address, addr.getIP().c_str() );
+	int ret = enet_address_set_host( &this->address, addr.getIP().c_str() );
 	if( ret != 0 ) {
 		return false;
 	}
 
-	address.port = addr.getPort();
+	this->address.port = addr.getPort();
 
-	peer = enet_host_connect( client, &address, 2 );
-	if(! peer ) {
-		enet_host_destroy(client);
-		client = NULL;
+	this->peer = enet_host_connect( client, &address, 2 );
+	if(! this->peer ) {
+		enet_host_destroy(this->client);
+		this->client = NULL;
 		return false;
 	}
 
 	ENetEvent event;
 	
-	if( enet_host_service(client, &event, 5000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT ) {
-		state = S_CONNECTING;
+	if( enet_host_service(this->client, &event, 5000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT ) {
+		this->state = S_CONNECTING;
 
 		// Wait 3 seconds for a Greeting (first packet send from server)
 		update(3000);
 
-		if( state == S_CONNECTED ) {
+		if( this->state == S_CONNECTED ) {
 			this->onServerConnect(addr);
 			return true;
 		}
 		else {
 			// Connecting isnt fully operational - timeout. Lets give up
-			rawDisconnect();
+			this->rawDisconnect();
 			return false;
 		}
 	}
@@ -79,7 +79,7 @@ bool Client::connect(const IPAddress& addr) {
 }
 
 void Client::update(int delay) {
-	if( state == S_DISCONNECTED )
+	if( this->state == S_DISCONNECTED )
 		return;
 
 	dnet::DistManager::Synchronize();
@@ -87,7 +87,7 @@ void Client::update(int delay) {
 	ENetEvent event;
 
 	// FIXME: enet_host_service might wait for 10 seconds before returning. This MUST NOT halt Dist::Synchronize()
-	while(enet_host_service(client, &event, delay ) > 0) {
+	while(enet_host_service(this->client, &event, delay ) > 0) {
 		delay = 0;	// We dont want to wait next time
 		switch(event.type) {
 			case ENET_EVENT_TYPE_RECEIVE:
@@ -98,7 +98,7 @@ void Client::update(int delay) {
 
 				Packet *packet;
 
-				if( state == S_CONNECTING ) {
+				if( this->state == S_CONNECTING ) {
 					// Here, we should get a GreetingPacket
 					if( (packet = PacketParser::ParsePacket(&raw)) ) {
 						LOG_NET("Got packet-%d [conn]\n", packet->packetId );
@@ -106,9 +106,9 @@ void Client::update(int delay) {
 						// GreetingPacket contains a clientId, which we need to use when generating globally unique ids
 						if(GreetingPacket* gp = dynamic_cast<GreetingPacket*>(packet) ) {
 							LOG_NET("Got GreetingPacket - my id: %d\n", gp->clientId);
-							setId(gp->clientId);
+							this->setId(gp->clientId);
 							PacketParser::DeletePacket(packet);
-							state = S_CONNECTED;
+							this->state = S_CONNECTED;
 						}
 						else {
 							// FIXME It could store received data in a buffer and process it once the greeting arrives
@@ -133,9 +133,10 @@ void Client::update(int delay) {
 				break;
 			case ENET_EVENT_TYPE_DISCONNECT:
 				{
-				state = S_DISCONNECTED;
-				enet_host_destroy(client); client = NULL;
-				peer = NULL;
+				this->state = S_DISCONNECTED;
+				enet_host_destroy(this->client); 
+				this->client = NULL;
+				this->peer = NULL;
 				this->onServerDisconnect();
 				return;
 				}
@@ -147,27 +148,28 @@ void Client::update(int delay) {
 }
 
 void Client::disconnect() {
-	if( state == S_DISCONNECTED ) return;
+	if( this->state == S_DISCONNECTED ) return;
 	this->onServerDisconnect();
 
 	rawDisconnect();
 }
 
 void Client::rawDisconnect() {
-	if( state == S_DISCONNECTED ) return;
+	if( this->state == S_DISCONNECTED ) return;
 
 	ENetEvent event;
 
-	enet_peer_disconnect( peer );
-	while(enet_host_service(client, &event, 3000) > 0) {
+	enet_peer_disconnect( this->peer );
+	while(enet_host_service(this->client, &event, 3000) > 0) {
 		switch(event.type) {
 			case ENET_EVENT_TYPE_RECEIVE:
 				// Ignore packet, we dont want more stuff
 				enet_packet_destroy (event.packet);
 				break;
 			case ENET_EVENT_TYPE_DISCONNECT:
-				state = S_DISCONNECTED;
-				enet_host_destroy(client); client = NULL;
+				this->state = S_DISCONNECTED;
+				enet_host_destroy(this->client); 
+				this->client = NULL;
 				peer = NULL;
 				return;
 			default:
@@ -175,9 +177,11 @@ void Client::rawDisconnect() {
 		}
 	}
 	// Timeout - do it the brutal way
-	enet_peer_reset(peer); peer = NULL;
-	enet_host_destroy(client); client = NULL;
-	state = S_DISCONNECTED;
+	enet_peer_reset(this->peer); 
+	this->peer = NULL;
+	enet_host_destroy(this->client); 
+	this->client = NULL;
+	this->state = S_DISCONNECTED;
 }
 
 int Client::send(Packet* packet, bool reliable) {
@@ -187,7 +191,7 @@ int Client::send(Packet* packet, bool reliable) {
 	*packet >> buf;				// FIXME - should be similar
 
 	LOG_NET("Sending packet-%d to server\n", packet->packetId);
-	return send(buf, reliable);
+	return this->send(buf, reliable);
 }
 
 int Client::send(Buffer& buf, bool reliable) {

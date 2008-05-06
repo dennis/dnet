@@ -26,8 +26,8 @@ const Packet& Packet::operator>>(Buffer&)  {
 
 void PacketParser::Initialize() {
 	for(int i = 0; i < 256; i++ ) {
-		packets[i].createFunc = 0L;
-		packets[i].deleteFunc = 0L;
+		PacketParser::packets[i].createFunc = 0L;
+		PacketParser::packets[i].deleteFunc = 0L;
 	}
 	// Register Internal PacketTypes here
 	RegisterPacketType<GreetingPacket>();
@@ -37,21 +37,21 @@ void PacketParser::Initialize() {
 }
 
 void PacketParser::RemovePacketType(uint8_t id) {
-	assert(!Exists(id));
-	packets[id].createFunc = 0L;
-	packets[id].deleteFunc = 0L;
+	assert(!PacketParser::Exists(id));
+	PacketParser::packets[id].createFunc = 0L;
+	PacketParser::packets[id].deleteFunc = 0L;
 }
 
 bool PacketParser::Exists(uint8_t id) {
-	return packets[id].createFunc != 0L;
+	return PacketParser::packets[id].createFunc != 0L;
 }
 
 Packet* PacketParser::CreatePacket(uint8_t id) {
 	LOG_NET("CreatePacket(%d)\n", id);
-	LOG_NET("  createFunc = %lx\n", (long unsigned int)packets[id].createFunc);
-	LOG_NET("  deleteFunc = %lx\n", (long unsigned int)packets[id].deleteFunc);
-	LOG_NET("  packets    = %lx\n", (long unsigned int)packets);
-	PacketCreateFunc	func = packets[id].createFunc;
+	LOG_NET("  createFunc = %lx\n", (long unsigned int)PacketParser::packets[id].createFunc);
+	LOG_NET("  deleteFunc = %lx\n", (long unsigned int)PacketParser::packets[id].deleteFunc);
+	LOG_NET("  packets    = %lx\n", (long unsigned int)PacketParser::packets);
+	PacketCreateFunc	func = PacketParser::packets[id].createFunc;
 	assert(func);
 
 	return func();
@@ -59,7 +59,7 @@ Packet* PacketParser::CreatePacket(uint8_t id) {
 
 void PacketParser::DeletePacket(Packet* p) {
 	if( p ) {
-		PacketDeleteFunc	func = packets[p->packetId].deleteFunc;
+		PacketDeleteFunc	func = PacketParser::packets[p->packetId].deleteFunc;
 		assert(func);
 		func(p);
 	}
@@ -99,49 +99,49 @@ bool PacketParser::InternalPacket(const Packet* p) {
 }
 
 GreetingPacket& GreetingPacket::operator<<(Buffer& buf) {		// Read from buffer
-	buf >> clientId;
+	buf >> this->clientId;
 	return *this;
 }
 
 const GreetingPacket& GreetingPacket::operator>>(Buffer& buf)  {	// Write to buffer
-	buf << clientId;
+	buf << this->clientId;
 	return *this;
 }
 
 NetObjectCreatePacket& NetObjectCreatePacket::operator<<(Buffer& buf) {		// Read from buffer
-	buf >> objId >> className;
-	buf >> buffer;
+	buf >> this->objId >> this->className;
+	buf >> this->buffer;
 	return *this;
 }
 
 const NetObjectCreatePacket& NetObjectCreatePacket::operator>>(Buffer& buf) {	// Write to buffer
-	buf << objId << className;
-	buf << buffer;
+	buf << this->objId << this->className;
+	buf << this->buffer;
 	return *this;
 }
 
 NetObjectDeletePacket& NetObjectDeletePacket::operator<<(Buffer& buf) {		// Read from buffer
-	buf >> objId;
+	buf >> this->objId;
 	return *this;
 }
 
 const NetObjectDeletePacket& NetObjectDeletePacket::operator>>(Buffer& buf) {	// Write to buffer
-	buf << objId;
+	buf << this->objId;
 	return *this;
 }
 
 NetObjectDataPacket& NetObjectDataPacket::operator<<(Buffer& buf) {		// Read from buffer
-	buf >> objId;
-	buf >> timestamp;
-	buf >> buffer;
+	buf >> this->objId;
+	buf >> this->timestamp;
+	buf >> this->buffer;
 	return *this;
 }
 
 const NetObjectDataPacket& NetObjectDataPacket::operator>>(Buffer& buf) {	// Write to buffer
 	assert( buffer.size() < 512 );
-	buf << objId;
-	buf << timestamp;
-	buf << buffer;
+	buf << this->objId;
+	buf << this->timestamp;
+	buf << this->buffer;
 	return *this;
 }
 

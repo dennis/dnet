@@ -46,11 +46,14 @@ public:
 	Attribute(int i, const char* n, uint32_t off, int pri, size_t s, std::string* d) : id(i), name(n), size(s), type(STRING), priority(pri), offset(off), data(reinterpret_cast<uint8_t*>(d))  { assert(id < 32); }
 
 	void dump() {
-		printf("Attribute: name: %s, offset: %d, priority: %d, size: %d, type: %d, data: %x\n", name, offset, priority, size, type, (unsigned int)data);
+		printf("Attribute: name: %s, offset: %d, priority: %d, size: %d, type: %d, data: %x\n", 
+			this->name, 	this->offset, 
+			this->priority, this->size, 
+			this->type, 	(unsigned int)this->data);
 	}
 
 	const char* getName() const {
-		return name;
+		return this->name;
 	}
 
 	void pack(Buffer* buffer) {

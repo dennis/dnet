@@ -8,20 +8,20 @@ IPAddress::IPAddress(const std::string& i, const unsigned int p) : ip(i), port(p
 
 IPAddress::IPAddress(const unsigned int i, const unsigned int p) : ip("127.0.0.1"), port(p) {
 
-	setDecimalIP(i);
+	this->setDecimalIP(i);
 }
 
 IPAddress::IPAddress(const IPAddress& other) : ip(other.ip), port(other.port)  {
 }
 
 IPAddress& IPAddress::operator=(const IPAddress& other) {
-	setIP(other.ip);
-	setPort(other.port);
+	this->setIP(other.ip);
+	this->setPort(other.port);
 	return *this;
 }
 
 void IPAddress::setIP(const std::string i) {
-	ip = i;
+	this->ip = i;
 }
 
 void IPAddress::setDecimalIP(const unsigned int descip) {
@@ -31,11 +31,11 @@ void IPAddress::setDecimalIP(const unsigned int descip) {
 		int(descip&0xff) << "." << int((descip>>8)&0xff) << "." << 
 		int((descip>>16)&0xff) <<  "." << int((descip>>24)&0xff);
 
-	setIP(ips.str());
+	this->setIP(ips.str());
 }
 
 void IPAddress::setPort(const unsigned int p) {
-	port = p;
+	this->port = p;
 }
 
 } // namespace dnet

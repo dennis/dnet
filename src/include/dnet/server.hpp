@@ -40,8 +40,8 @@ public:
 	virtual ~Server();
 	
 	// Start, running, stopping
-	bool start(const std::string host, const int port) {
-		return start(IPAddress(host,port));
+	bool start(const std::string _host, const int _port) {
+		return this->start(IPAddress(_host,_port));
 	}
 
 	bool start(const IPAddress&);
