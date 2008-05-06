@@ -48,9 +48,9 @@ bool PacketParser::Exists(uint8_t id) {
 
 Packet* PacketParser::CreatePacket(uint8_t id) {
 	LOG_NET("CreatePacket(%d)\n", id);
-	LOG_NET("  createFunc = %lx\n", packets[id].createFunc);
-	LOG_NET("  deleteFunc = %lx\n", packets[id].deleteFunc);
-	LOG_NET("  packets    = %lx\n", packets);
+	LOG_NET("  createFunc = %lx\n", (long unsigned int)packets[id].createFunc);
+	LOG_NET("  deleteFunc = %lx\n", (long unsigned int)packets[id].deleteFunc);
+	LOG_NET("  packets    = %lx\n", (long unsigned int)packets);
 	PacketCreateFunc	func = packets[id].createFunc;
 	assert(func);
 
