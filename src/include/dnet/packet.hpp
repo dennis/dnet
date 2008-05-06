@@ -62,9 +62,9 @@ public:
 		LOG_NET("RegisterPacketType() -> packet-id %d\n", T::PACKET_ID);
 		packets[T::PACKET_ID].createFunc = DefaultPacketCreateFunc<T>;
 		packets[T::PACKET_ID].deleteFunc = DefaultPacketDeleteFunc<T>;
-		LOG_NET("  createFunc = %lx\n", packets[T::PACKET_ID].createFunc);
-		LOG_NET("  deleteFunc = %lx\n", packets[T::PACKET_ID].deleteFunc);
-		LOG_NET("  packets    = %lx\n", packets);
+		LOG_NET("  createFunc = %lx\n", (long unsigned int)packets[T::PACKET_ID].createFunc);
+		LOG_NET("  deleteFunc = %lx\n", (long unsigned int)packets[T::PACKET_ID].deleteFunc);
+		LOG_NET("  packets    = %lx\n", (long unsigned int)packets);
 	}
 
 	static void RemovePacketType(uint8_t);
