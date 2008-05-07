@@ -181,7 +181,8 @@ void DistManager::RegisterClass(const char* name, DNET_ClassDescription::Creator
 	func.creator = creator;
 	func.deleter = deleter;
 	LOG_DIST("RegisterClass(%s)\n", name);
-	NetClasses.insert(std::make_pair( std::string(name), func ));
+//	DistManager::NetClasses.insert(std::make_pair( std::string(name), func ));
+#warning This will malfunction!
 }
 
 void DistManager::Synchronize() {

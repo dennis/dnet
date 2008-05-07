@@ -190,7 +190,7 @@ int Server::send(ClientId clientId, Packet* packet, bool reliable) {
 	*packet >> buf;						// FIXME - should be similar
 
 	LOG_NET("Sending packet-%d to client %d, %d bytes\n", packet->packetId, clientId, buf.size());
-	buf.dump();
+	//buf.dump();
 	return this->send(clientId, buf, reliable );
 }
 

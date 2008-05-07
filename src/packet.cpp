@@ -30,10 +30,10 @@ void PacketParser::Initialize() {
 		PacketParser::packets[i].deleteFunc = 0L;
 	}
 	// Register Internal PacketTypes here
-	RegisterPacketType<GreetingPacket>();
-	RegisterPacketType<NetObjectCreatePacket>();
-	RegisterPacketType<NetObjectDeletePacket>();
-	RegisterPacketType<NetObjectDataPacket>();
+	PacketParser::RegisterPacketType<GreetingPacket>();
+	PacketParser::RegisterPacketType<NetObjectCreatePacket>();
+	PacketParser::RegisterPacketType<NetObjectDeletePacket>();
+	PacketParser::RegisterPacketType<NetObjectDataPacket>();
 }
 
 void PacketParser::RemovePacketType(uint8_t id) {
@@ -47,10 +47,6 @@ bool PacketParser::Exists(uint8_t id) {
 }
 
 Packet* PacketParser::CreatePacket(uint8_t id) {
-	LOG_NET("CreatePacket(%d)\n", id);
-	LOG_NET("  createFunc = %lx\n", (long unsigned int)PacketParser::packets[id].createFunc);
-	LOG_NET("  deleteFunc = %lx\n", (long unsigned int)PacketParser::packets[id].deleteFunc);
-	LOG_NET("  packets    = %lx\n", (long unsigned int)PacketParser::packets);
 	PacketCreateFunc	func = PacketParser::packets[id].createFunc;
 	assert(func);
 
@@ -70,7 +66,7 @@ Packet* PacketParser::ParsePacket(Buffer* raw) {
 	uint8_t id = 0;		// Packet ID
 
 	LOG_NET("ParsePacket: %d bytes\n", raw->size());
-	raw->dump();
+	//raw->dump();
 	*raw >> id;
 
 	Packet* newPacket = CreatePacket(id);

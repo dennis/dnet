@@ -201,7 +201,7 @@ int Client::send(Buffer& buf, bool reliable) {
 	int bufSize = buf.size();
 
 	LOG_NET("Sending %d bytes to server using %s\n", bufSize, (reliable?"reliable":"unreliable") );
-	buf.dump();
+	//buf.dump();
 	
 	ENetPacket* packet = enet_packet_create(buf.getData(), bufSize, reliable ? ENET_PACKET_FLAG_RELIABLE : 0  );
 	assert(packet);
