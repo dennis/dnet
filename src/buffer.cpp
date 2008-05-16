@@ -27,8 +27,6 @@ Buffer::Buffer(const Buffer& src) {
 	memcpy(this->buffer, src.buffer, this->bufferLen);
 
 	assert( this->size() == src.size());
-
-	LOG_BUF("Buffer(Copy) size=%d\n", this->size());
 }
 
 Buffer::~Buffer() {
@@ -48,8 +46,6 @@ Buffer& Buffer::operator=(const Buffer& src) {
 	memcpy(this->buffer, src.buffer, this->bufferLen);
 
 	assert( this->size() == src.size());
-
-	LOG_BUF("Buffer::operator= size=%d\n", this->size());
 
 	return *this;
 }
