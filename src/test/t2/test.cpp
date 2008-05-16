@@ -46,7 +46,6 @@ public:
 		DNET_ATTRIBUTE(health,20);
 	)
 };
-DNET_REGISTER(Tank,50,100);
 
 class EvilTank : public Tank {
 public:
@@ -77,6 +76,8 @@ public:
 		printf("name : %s\n", name.c_str() );
 	}
 };
+
+DNET_REGISTER(Tank,50,100);
 DNET_REGISTER(EvilTank,50,100);
 
 int server() {
@@ -145,8 +146,18 @@ int client(const char* name) {
 	return 0;
 }
 
-int main(int argc, char* argv[]) {
+#define DNET_REGISTER_HACK(distclass,min,max)  { \
+dnet::DistManager::ClassFunc	func; \
+func.creator = (dnet::DNET_ClassDescription::CreatorFunc)&distclass::DNET_CreateInstance; \
+func.deleter = (dnet::DNET_ClassDescription::DeleterFunc)&distclass::DNET_DeleteInstance; \
+dnet::DistManager::NetClasses.insert(std::make_pair(std::string(#distclass), func)); \
+}
+
+int main(int /*argc*/, char* argv[]) {
 	if( dnet::init() ) {
+		DNET_REGISTER_HACK(Tank, 0, 0);
+		DNET_REGISTER_HACK(EvilTank, 0, 0);
+
 		try {
 			if( argv[1] )
 				return client(argv[1]);

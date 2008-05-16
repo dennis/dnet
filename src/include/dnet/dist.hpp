@@ -150,6 +150,11 @@ public:
 typedef std::vector< dnet::Attribute > Attributes;
 
 class DistManager {
+public:
+	struct ClassFunc {
+		DNET_ClassDescription::CreatorFunc	creator;
+		DNET_ClassDescription::DeleterFunc 	deleter;
+	};
 private:
 	static Interface*	interface;
 	static bool			isServer;
@@ -160,15 +165,11 @@ private:
 	static void SendCreationPacket(uint32_t, const DNET_ClassDescription&);
 	static void SendDeletionPacket(uint32_t, const DNET_ClassDescription&);
 
-	struct ClassFunc {
-		DNET_ClassDescription::CreatorFunc	creator;
-		DNET_ClassDescription::DeleterFunc 	deleter;
-	};
 	
 	typedef std::map<std::string, ClassFunc> ClassMap;
 	typedef std::map<uint32_t, NetObject* > ObjectMap;
 	typedef std::map<uint8_t, std::map<uint32_t,float> > LOIMap;
-
+public:
 	static ClassMap		NetClasses;
 	static ObjectMap		NetObjects;
 	static LOIMap			NetObjectsLOI;
