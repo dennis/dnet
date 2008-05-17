@@ -11,8 +11,10 @@
 
 namespace dnet {
 
+// FIXME NetClasses is never destructed!
+
 uint32_t 							DistManager::id							= 0;
-DistManager::ClassMap				DistManager::NetClasses;
+DistManager::ClassMap*				DistManager::NetClasses					= NULL;
 DistManager::ObjectMap				DistManager::NetObjects;
 DistManager::LOIMap					DistManager::NetObjectsLOI;
 Interface* 							DistManager::interface					= 0L;
@@ -64,9 +66,10 @@ void DistManager::SendDeletionPacket(uint32_t objectId, const DNET_ClassDescript
 }
 
 NetObject* DistManager::CreateObject(const char* name, uint32_t objectId, bool local) {
-	ClassMap::iterator i = DistManager::NetClasses.find(name);
+	assert(DistManager::NetClasses);
+	ClassMap::iterator i = DistManager::NetClasses->find(name);
 
-	if( i != NetClasses.end() ) {
+	if( i != NetClasses->end() ) {
 		DNET_ClassDescription* desc;
 		DNET_ClassDescription::CreatorFunc creator = i->second.creator;
 
@@ -177,12 +180,15 @@ void DistManager::UpdateObject(uint32_t _id, uint32_t timestamp, Buffer* buffer)
 }
 
 void DistManager::RegisterClass(const char* name, DNET_ClassDescription::CreatorFunc creator, DNET_ClassDescription::DeleterFunc deleter) {
+	if( DistManager::NetClasses == NULL )
+		DistManager::NetClasses = new DistManager::ClassMap;
+
 	ClassFunc func;
 	func.creator = creator;
 	func.deleter = deleter;
+
 	LOG_DIST("RegisterClass(%s)\n", name);
-//	DistManager::NetClasses.insert(std::make_pair( std::string(name), func ));
-#warning This will malfunction!
+	DistManager::NetClasses->insert(std::make_pair( std::string(name), func ));
 }
 
 void DistManager::Synchronize() {

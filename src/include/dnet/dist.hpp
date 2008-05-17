@@ -170,7 +170,7 @@ private:
 	typedef std::map<uint32_t, NetObject* > ObjectMap;
 	typedef std::map<uint8_t, std::map<uint32_t,float> > LOIMap;
 public:
-	static ClassMap		NetClasses;
+	static ClassMap*		NetClasses;
 	static ObjectMap		NetObjects;
 	static LOIMap			NetObjectsLOI;
 
