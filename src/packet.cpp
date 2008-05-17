@@ -48,7 +48,10 @@ bool PacketParser::Exists(uint8_t id) {
 
 Packet* PacketParser::CreatePacket(uint8_t id) {
 	PacketCreateFunc	func = PacketParser::packets[id].createFunc;
-	assert(func);
+	if(! func ) {
+		LOG_NET("ParsePacket::CreatePacket(%d) failed\n", id);
+		assert(func);
+	}
 
 	return func();
 }
