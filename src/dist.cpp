@@ -8,6 +8,7 @@
 
 #include <list>
 #include <functional>
+#include <algorithm>
 
 namespace dnet {
 
