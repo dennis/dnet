@@ -8,7 +8,7 @@
  #define LOG_DIST(...) LOG("dist", __VA_ARGS__)
 // #define LOG_NET(...) LOG("net ", __VA_ARGS__)
  #define LOG_SYNC(...) LOG("sync", __VA_ARGS__)
- #define LOG_BUF(...) LOG("buf ", __VA_ARGS__)
+// #define LOG_BUF(...) LOG("buf ", __VA_ARGS__)
 // #define LOG_PACK(...) LOG("pack", __VA_ARGS__)
 #endif
 

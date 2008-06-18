@@ -15,7 +15,7 @@ class RandomController : public Controller{
 public:
 	bool init(SpaceshipsVector_t& spaceships) {
 		Spaceship* ss;
-		for(int j = 0; j < 5; j++ ) {
+		for(int j = 0; j < 1; j++ ) {
 			ss = new Spaceship(rand() % WIDTH, rand() % HEIGHT);
 			ss->player = (j == 0);
 			dnet::DistManager::Add(*ss);

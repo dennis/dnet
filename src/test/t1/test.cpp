@@ -42,8 +42,8 @@ public:
 		return *this;
 	}
 };
-const uint8_t DataPacket::ID = 42;
 
+const uint8_t DataPacket::ID = 0;
 
 class MyServer : public dnet::Server {
 public:
