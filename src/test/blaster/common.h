@@ -2,10 +2,11 @@
 #define COMMON_H
 #define WIDTH 800 //640
 #define HEIGHT 600 //480
-#define TICK_INTERVAL 200
+#define TICK_INTERVAL 50
 
 #include <dnet/dnet.hpp>
 #include <vector>
+#include <algorithm>
 #include "common.h"
 
 class Spaceship;
@@ -45,8 +46,8 @@ public:
 	}
 
 	void onRemotelyUpdated() {
-		printf("onRemotelyUpdated(%x) %x: ", getObjectId(), (unsigned int)this );
-		debug();
+//		printf("onRemotelyUpdated(%x) %x: ", getObjectId(), (unsigned int)this );
+//		debug();
 	}
 
 	void debug() {
@@ -64,7 +65,7 @@ public:
 
 };
 
-DNET_REGISTER(Spaceship,500,1000);
+DNET_REGISTER(Spaceship,10,50);
 
 class Shot : public dnet::NetObject {
 public:
@@ -76,7 +77,7 @@ public:
 
 	void onRemotelyCreated() {
 		shots.push_back(this);
-		printf("onRemotelyCreated(%x) %x. Shout count %d\n", 
+		printf("onRemotelyCreated(%x) %x. Shot count %d\n", 
 			getObjectId(), (unsigned int)this, shots.size());
 		onRemotelyUpdated();
 	}
@@ -89,8 +90,8 @@ public:
 			getObjectId(), (unsigned int)this, shots.size() );
 	}
 	void onRemotelyUpdated() {
-		printf("onRemotelyUpdated(%x) %x updated shot: pos=%f,%f dir=%f,%f\n", 
-			getObjectId(), (unsigned int)this, posX, posY, dirX, dirY );
+//		printf("onRemotelyUpdated(%x) %x updated shot: pos=%f,%f dir=%f,%f\n", 
+//			getObjectId(), (unsigned int)this, posX, posY, dirX, dirY );
 	}
 
 	DNET_DESC(Shot,
@@ -101,6 +102,6 @@ public:
 	);
 };
 
-DNET_REGISTER(Shot,50,1000);
+DNET_REGISTER(Shot,10,50);
 
 #endif

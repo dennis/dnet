@@ -3,6 +3,7 @@
 
 #include <arpa/inet.h>	// htons..etc
 #include <string>
+#include <string.h>
 
 #include <dnet/common.hpp>
 #include <dnet/buffer.hpp>
