@@ -31,6 +31,8 @@ public:
 		ClientId		id;
 		ENetPeer*		peer;		// FIXME Possible Resource Leak
 		unsigned int	bw;
+
+		ClientCon() : id(0), peer(NULL), bw(0) {}
 	};
 
 	typedef std::map<ClientId,ClientCon> IdToClientMap;

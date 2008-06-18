@@ -19,11 +19,11 @@ namespace dnet {
 
 		void setPort(const unsigned int);
 
-		const std::string getIP() const {
+		std::string getIP() const {
 			return ip;
 		}
 
-		const unsigned int getPort() const {
+		unsigned int getPort() const {
 			return port;
 		}
 	protected:

@@ -230,7 +230,7 @@ void DistManager::SynchronizeASBS() {
 }
 
 bool DistManager::DoSync(uint32_t _id, uint8_t forClientId) {
-	return (isServer && !CheckClientId( _id, forClientId) ||
+	return ((isServer && !CheckClientId( _id, forClientId)) ||
 				(!isServer && CheckClientId( _id, DistManager::interface->getId())));
 }
 

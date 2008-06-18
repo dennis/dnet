@@ -95,7 +95,7 @@ public:
 		}
 	}
 
-	void render(SpaceshipsVector_t spaceships, ShotsVector_t shots) {
+	void render(SpaceshipsVector_t _spaceships, ShotsVector_t _shots) {
 		// Move stars
 		for( int i = 0; i < NUM_STARS; i++ ) {
 			starX[i] = (starX[i] + STAR_MOVE_X*starSpeed[i]) % WIDTH;
@@ -115,7 +115,7 @@ public:
 		uint32_t	shipColorForeign	= SDL_MapRGB(screen->format, 0xff, 0x00, 0xff);
 		uint32_t	shipColorPlayer		= SDL_MapRGB(screen->format, 0xff, 0xff, 0xff);
 		uint32_t	shipColor;
-		for( SpaceshipsVector_t::iterator i = spaceships.begin(); i != spaceships.end(); ++i ) {
+		for( SpaceshipsVector_t::iterator i = _spaceships.begin(); i != _spaceships.end(); ++i ) {
 			if( (*i)->isLocal() ) 
 				shipColor = (*i)->player ? shipColorPlayer : shipColorLocal;
 			else
@@ -125,7 +125,7 @@ public:
 
 		// And shots
 		uint32_t	shotColor		= SDL_MapRGB(screen->format, 0xff, 0xff, 0xff);
-		for( ShotsVector_t::iterator i = shots.begin(); i != shots.end(); ++i ) {
+		for( ShotsVector_t::iterator i = _shots.begin(); i != _shots.end(); ++i ) {
 			lineColor(screen, 
 				static_cast<int>((*i)->posX), static_cast<int>((*i)->posY),
 				static_cast<int>((*i)->posX + (*i)->dirX), static_cast<int>((*i)->posY + (*i)->dirY),

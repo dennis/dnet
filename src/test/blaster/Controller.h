@@ -13,21 +13,21 @@ public:
 
 class RandomController : public Controller{
 public:
-	bool init(SpaceshipsVector_t& spaceships) {
+	bool init(SpaceshipsVector_t& _spaceships) {
 		Spaceship* ss;
 		for(int j = 0; j < 1; j++ ) {
 			ss = new Spaceship(rand() % WIDTH, rand() % HEIGHT);
 			ss->player = (j == 0);
 			dnet::DistManager::Add(*ss);
-			spaceships.push_back(ss);
+			_spaceships.push_back(ss);
 		}
 
 		return true;
 	}
-	void render(SpaceshipsVector_t& spaceships) {
+	void render(SpaceshipsVector_t& _spaceships) {
 		// Move ships
 		Spaceship* sp;
-		for( SpaceshipsVector_t::iterator i = spaceships.begin(); i != spaceships.end(); ++i ) {
+		for( SpaceshipsVector_t::iterator i = _spaceships.begin(); i != _spaceships.end(); ++i ) {
 			sp = *i;
 
 			if( ! sp->isLocal() )
